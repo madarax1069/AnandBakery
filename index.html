@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anand Bakery — Fresh from the oven since 1987 · Park Street, Kolkata</title>
+<meta name="description" content="Anand Bakery — A family-run, three-generation neighbourhood bakery on Park Street, Kolkata. Cakes, pastries, breads and cookies baked fresh daily since 1987." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   DESIGN TOKENS
+   ========================================================= */
+:root {
+  --cream:        #FAF4E8;
+  --cream-2:      #F2E8D5;
+  --cream-3:      #ECDDC0;
+  --brown-900:    #2A1810;
+  --brown-800:    #3A2218;
+  --brown-700:    #4A2C1A;
+  --brown-500:    #7A4A28;
+  --brown-300:    #C9A57B;
+  --gold:         #C8A45A;
+  --gold-soft:    #E5C887;
+  --gold-deep:    #9C7A35;
+  --gold-light:   #F2DDA8;
+
+  --serif: 'Cormorant Garamond', 'Times New Roman', serif;
+  --sans:  'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  --mx: 50%;
+  --my: 50%;
+}
+
+/* =========================================================
+   RESET / BASE
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--brown-900);
+  background: var(--cream);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Warm gradient background with subtle gold glow — gives the glass something to refract */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 15% 10%, rgba(232, 200, 135, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 85% 80%, rgba(200, 164, 90, 0.18) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, var(--cream) 0%, var(--cream-2) 100%);
+  z-index: -2;
+  pointer-events: none;
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+p { color: var(--brown-700); }
+
+/* =========================================================
+   APPLE LIQUID GLASS — the core system
+   Layered: gradient + backdrop-filter + inset specular + cursor-following sheen
+   ========================================================= */
+.liquid-glass {
+  position: relative;
+  background:
+    linear-gradient(135deg,
+      rgba(255, 250, 235, 0.55) 0%,
+      rgba(255, 248, 225, 0.18) 45%,
+      rgba(245, 220, 175, 0.42) 100%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
+  backdrop-filter: blur(24px) saturate(180%) brightness(1.05);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(200, 164, 90, 0.18),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 10px 30px -8px rgba(74, 44, 26, 0.18),
+    0 4px 12px -4px rgba(74, 44, 26, 0.10);
+  border-radius: 20px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Cursor-following specular sheen — gives the wet, glassy, moving highlight */
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    360px circle at var(--mx) var(--my),
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 245, 220, 0.25) 18%,
+    rgba(255, 245, 220, 0) 45%
+  );
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 350ms ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.liquid-glass:hover::before,
+.liquid-glass.is-active::before { opacity: 1; }
+
+/* Inner refraction edge — thin gradient stroke at the inside rim */
+.liquid-glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    rgba(200, 164, 90, 0.25) 70%,
+    rgba(255, 255, 255, 0.6) 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.85;
+}
+
+.liquid-glass > * { position: relative; z-index: 3; }
+
+/* Variants */
+.glass-nav {
+  background: linear-gradient(135deg,
+    rgba(255, 250, 235, 0.40) 0%,
+    rgba(255, 248, 225, 0.12) 50%,
+    rgba(245, 220, 175, 0.30) 100%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.08);
+  backdrop-filter: blur(28px) saturate(180%) brightness(1.08);
+  border-radius: 100px;
+}
+
+.glass-card {
+  border-radius: 24px;
+  background: linear-gradient(160deg,
+    rgba(255, 250, 235, 0.65) 0%,
+    rgba(255, 248, 225, 0.25) 50%,
+    rgba(232, 200, 135, 0.40) 100%);
+  -webkit-backdrop-filter: blur(20px) saturate(170%) brightness(1.04);
+  backdrop-filter: blur(20px) saturate(170%) brightness(1.04);
+}
+
+.glass-dark {
+  background: linear-gradient(135deg,
+    rgba(58, 34, 24, 0.45) 0%,
+    rgba(42, 24, 16, 0.25) 50%,
+    rgba(74, 44, 26, 0.45) 100%);
+  -webkit-backdrop-filter: blur(30px) saturate(160%) brightness(1.1);
+  backdrop-filter: blur(30px) saturate(160%) brightness(1.1);
+  border: 1px solid rgba(229, 200, 135, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(229, 200, 135, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 10px 30px -8px rgba(0, 0, 0, 0.4);
+  color: var(--cream);
+}
+.glass-dark::after {
+  background: linear-gradient(135deg,
+    rgba(229, 200, 135, 0.7) 0%,
+    rgba(229, 200, 135, 0.05) 40%,
+    rgba(255, 255, 255, 0.2) 100%);
+}
+
+.glass-pill {
+  border-radius: 100px;
+  padding: 12px 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* WhatsApp-style pill, but tinted gold to match the palette */
+.btn-whatsapp {
+  background: linear-gradient(135deg,
+    rgba(232, 200, 135, 0.85) 0%,
+    rgba(200, 164, 90, 0.95) 50%,
+    rgba(156, 122, 53, 0.95) 100%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.1);
+  backdrop-filter: blur(20px) saturate(180%) brightness(1.1);
+  border: 1px solid rgba(255, 235, 180, 0.6);
+  color: var(--brown-900);
+  border-radius: 100px;
+  padding: 16px 32px;
+  font-weight: 500;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(102, 75, 28, 0.3),
+    0 8px 24px -6px rgba(156, 122, 53, 0.5),
+    0 0 0 0 rgba(200, 164, 90, 0.4);
+  transition: transform 250ms ease, box-shadow 250ms ease, filter 250ms ease;
+  position: relative;
+  isolation: isolate;
+  cursor: pointer;
+}
+.btn-whatsapp::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    280px circle at var(--mx) var(--my),
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 245, 220, 0.3) 25%,
+    transparent 50%
+  );
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+.btn-whatsapp:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.btn-whatsapp:hover::before { opacity: 1; }
+.btn-whatsapp > * { position: relative; z-index: 1; }
+
+/* Ambient pulse on the hero WhatsApp button */
+@keyframes pulse-gold {
+  0%, 100% { box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(102, 75, 28, 0.3),
+    0 8px 24px -6px rgba(156, 122, 53, 0.5),
+    0 0 0 0 rgba(200, 164, 90, 0.5); }
+  50% { box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(102, 75, 28, 0.3),
+    0 8px 24px -6px rgba(156, 122, 53, 0.5),
+    0 0 0 16px rgba(200, 164, 90, 0); }
+}
+.btn-whatsapp.is-pulse { animation: pulse-gold 3s ease-in-out infinite; }
+
+/* Fallback for browsers without backdrop-filter */
+@supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+  .liquid-glass, .glass-nav, .glass-card, .glass-dark {
+    background: rgba(250, 244, 232, 0.92);
+  }
+  .glass-dark { background: rgba(42, 24, 16, 0.92); }
+}
+
+/* =========================================================
+   NAV
+   ========================================================= */
+.nav-wrap {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: calc(100% - 32px);
+  max-width: 1180px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.nav {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 8px 8px 22px;
+  width: 100%;
+  justify-content: space-between;
+  transition: transform 300ms ease;
+}
+.nav.scrolled { transform: translateY(-4px); }
+.nav-brand {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--brown-900);
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-brand .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 12px var(--gold-soft);
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+}
+.nav-links a {
+  display: inline-block;
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--brown-700);
+  border-radius: 100px;
+  transition: background 200ms ease, color 200ms ease;
+}
+.nav-links a:hover { background: rgba(200, 164, 90, 0.18); color: var(--brown-900); }
+
+.nav-cta {
+  padding: 10px 18px !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: linear-gradient(135deg, var(--gold-soft) 0%, var(--gold) 100%);
+  color: var(--brown-900) !important;
+  border-radius: 100px;
+  box-shadow: 0 4px 12px -4px rgba(156, 122, 53, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-cta:hover { background: linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%) !important; }
+
+.hamburger {
+  display: none;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 250, 235, 0.5);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  align-items: center;
+  justify-content: center;
+  color: var(--brown-900);
+}
+.hamburger span {
+  display: block;
+  width: 18px; height: 1.5px;
+  background: currentColor;
+  position: relative;
+  transition: transform 200ms ease;
+}
+.hamburger span::before,
+.hamburger span::after {
+  content: ''; position: absolute; left: 0;
+  width: 18px; height: 1.5px; background: currentColor;
+  transition: transform 200ms ease, top 200ms ease;
+}
+.hamburger span::before { top: -6px; }
+.hamburger span::after  { top: 6px; }
+.hamburger[aria-expanded="true"] span { background: transparent; }
+.hamburger[aria-expanded="true"] span::before { top: 0; transform: rotate(45deg); }
+.hamburger[aria-expanded="true"] span::after  { top: 0; transform: rotate(-45deg); }
+
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  padding: 96px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transform: translateY(-12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 300ms ease, opacity 300ms ease;
+  background: linear-gradient(160deg,
+    rgba(255, 250, 235, 0.85) 0%,
+    rgba(245, 220, 175, 0.75) 100%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  backdrop-filter: blur(32px) saturate(180%);
+}
+.mobile-menu.is-open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.mobile-menu a {
+  display: block;
+  padding: 18px 20px;
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  color: var(--brown-900);
+  border-bottom: 1px solid rgba(122, 74, 40, 0.12);
+}
+.mobile-menu a:last-of-type { border-bottom: none; }
+.mobile-menu .mobile-cta { margin-top: 16px; align-self: flex-start; }
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  color: var(--cream);
+  isolation: isolate;
+}
+.hero-bg {
+  position: absolute;
+  inset: -8% 0;
+  background-image: url('https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=2000&q=80');
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+  will-change: transform;
+}
+/* Warm vignette overlay — dark cocoa at edges, transparent in center */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 50%, transparent 0%, rgba(42, 24, 16, 0.45) 60%, rgba(42, 24, 16, 0.75) 100%),
+    linear-gradient(180deg, rgba(42, 24, 16, 0.35) 0%, rgba(42, 24, 16, 0.15) 40%, rgba(42, 24, 16, 0.55) 100%);
+  z-index: -1;
+  pointer-events: none;
+}
+.hero-content {
+  max-width: 900px;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.hero-divider {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-soft), transparent);
+  margin-bottom: 6px;
+}
+.hero-eyebrow {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  margin-bottom: -8px;
+}
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 9vw, 7rem);
+  font-weight: 500;
+  line-height: 1.0;
+  letter-spacing: -0.015em;
+  color: var(--cream);
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  margin-bottom: 4px;
+}
+.hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold-soft);
+}
+.hero-tagline {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  color: rgba(250, 244, 232, 0.85);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  max-width: 540px;
+  margin-bottom: 16px;
+}
+.hero-meta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+.hero-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: rgba(250, 244, 232, 0.7);
+  letter-spacing: 0.02em;
+}
+.hero-meta span::before {
+  content: '';
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--gold);
+  display: inline-block;
+}
+.hero-meta span:first-child::before { display: none; }
+
+.scroll-cue {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  z-index: 1;
+}
+.scroll-cue svg {
+  width: 20px; height: 20px;
+  animation: bob 2.2s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
+/* =========================================================
+   SECTION BASE
+   ========================================================= */
+section { padding: 100px 24px; position: relative; }
+.section-head {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 64px;
+}
+.section-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 14px;
+  position: relative;
+  padding: 0 24px;
+}
+.section-eyebrow::before, .section-eyebrow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 16px; height: 1px;
+  background: var(--gold);
+}
+.section-eyebrow::before { left: 0; }
+.section-eyebrow::after  { right: 0; }
+.section-title {
+  font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+  font-weight: 500;
+  color: var(--brown-900);
+  margin-bottom: 16px;
+}
+.section-title em { font-style: italic; color: var(--gold-deep); }
+.section-sub {
+  font-size: 1.02rem;
+  color: var(--brown-700);
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+.container { max-width: 1200px; margin: 0 auto; }
+
+/* =========================================================
+   ABOUT
+   ========================================================= */
+.about { background: linear-gradient(180deg, var(--cream) 0%, var(--cream-2) 100%); }
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.about-img-wrap {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  aspect-ratio: 4/5;
+  box-shadow: 0 20px 60px -20px rgba(74, 44, 26, 0.35);
+}
+.about-img-wrap img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 1.2s ease;
+}
+.about-img-wrap:hover img { transform: scale(1.04); }
+.about-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(200, 164, 90, 0.4);
+  border-radius: inherit;
+  pointer-events: none;
+}
+/* Small floating accent card on the image */
+.about-accent {
+  position: absolute;
+  bottom: -20px; right: -20px;
+  padding: 18px 22px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: right;
+}
+.about-accent strong {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  color: var(--brown-900);
+  line-height: 1;
+}
+.about-accent span {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brown-700);
+}
+.about-text h2 {
+  font-size: clamp(2rem, 3.6vw, 2.8rem);
+  margin-bottom: 24px;
+  color: var(--brown-900);
+}
+.about-text h2 em { color: var(--gold-deep); font-style: italic; }
+.about-text p {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin-bottom: 18px;
+  color: var(--brown-700);
+}
+.about-text p:first-of-type::first-letter {
+  font-family: var(--serif);
+  font-size: 3.4rem;
+  float: left;
+  line-height: 1;
+  padding: 6px 12px 0 0;
+  color: var(--gold-deep);
+  font-weight: 600;
+}
+.about-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.stat {
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.stat strong {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--brown-900);
+  line-height: 1;
+}
+.stat span {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--brown-500);
+}
+
+/* =========================================================
+   MENU
+   ========================================================= */
+.menu { background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream-3) 100%); }
+
+.tabs {
+  display: inline-flex;
+  padding: 6px;
+  margin: 0 auto 56px;
+  border-radius: 100px;
+  position: relative;
+  gap: 2px;
+}
+.tabs-wrap { display: flex; justify-content: center; flex-wrap: wrap; }
+.tab {
+  position: relative;
+  z-index: 1;
+  padding: 10px 22px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--brown-700);
+  border-radius: 100px;
+  transition: color 250ms ease;
+  background: transparent;
+  white-space: nowrap;
+}
+.tab.is-active { color: var(--brown-900); }
+.tab-indicator {
+  position: absolute;
+  top: 6px; left: 6px;
+  height: calc(100% - 12px);
+  background: linear-gradient(135deg, var(--gold-soft) 0%, var(--gold) 100%);
+  border-radius: 100px;
+  z-index: 0;
+  box-shadow: 0 4px 12px -4px rgba(156, 122, 53, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.menu-card {
+  border-radius: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 350ms ease, box-shadow 350ms ease;
+  position: relative;
+}
+.menu-card:hover { transform: translateY(-6px); }
+.menu-card-img {
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  position: relative;
+}
+.menu-card-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 600ms ease;
+}
+.menu-card:hover .menu-card-img img { transform: scale(1.08); }
+.menu-card-tag {
+  position: absolute;
+  top: 12px; left: 12px;
+  background: rgba(42, 24, 16, 0.6);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(229, 200, 135, 0.4);
+  color: var(--gold-soft);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 100px;
+  font-weight: 500;
+}
+.menu-card-body {
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+.menu-card-name {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--brown-900);
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+.menu-card-desc {
+  font-size: 0.85rem;
+  color: var(--brown-700);
+  line-height: 1.5;
+  flex: 1;
+  margin-bottom: 8px;
+}
+.menu-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(122, 74, 40, 0.15);
+}
+.menu-card-price {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--gold-deep);
+  line-height: 1;
+}
+.menu-card-weight {
+  font-size: 0.72rem;
+  color: var(--brown-500);
+  letter-spacing: 0.05em;
+}
+
+/* Filter animation */
+.menu-card {
+  transition: transform 350ms ease, box-shadow 350ms ease, opacity 280ms ease;
+}
+.menu-card.is-hidden {
+  opacity: 0;
+  transform: scale(0.94);
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+}
+
+/* =========================================================
+   GALLERY
+   ========================================================= */
+.gallery { background: linear-gradient(180deg, var(--cream-3) 0%, var(--cream-2) 100%); }
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.gallery-tile {
+  aspect-ratio: 1/1;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 8px 24px -10px rgba(74, 44, 26, 0.25);
+}
+.gallery-tile img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 800ms ease;
+}
+.gallery-tile::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(42, 24, 16, 0) 50%, rgba(42, 24, 16, 0.5) 100%);
+  z-index: 1;
+  opacity: 0.6;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+.gallery-tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(229, 200, 135, 0.3);
+  border-radius: inherit;
+  z-index: 2;
+  pointer-events: none;
+  transition: border-color 300ms ease;
+}
+.gallery-tile:hover img { transform: scale(1.08); }
+.gallery-tile:hover::before { opacity: 0.85; }
+.gallery-tile:hover::after { border-color: var(--gold); }
+.gallery-tile .caption {
+  position: absolute;
+  bottom: 16px; left: 16px;
+  z-index: 3;
+  color: var(--cream);
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+.gallery-tile:hover .caption { opacity: 1; transform: translateY(0); }
+
+/* =========================================================
+   VISIT
+   ========================================================= */
+.visit { background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream) 100%); }
+.visit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 32px;
+  align-items: stretch;
+}
+.visit-info {
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.visit-info h3 {
+  font-size: 1.8rem;
+  margin-bottom: 4px;
+  color: var(--brown-900);
+}
+.visit-info h3 em { color: var(--gold-deep); font-style: italic; }
+.visit-line {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.visit-line .icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold-soft) 0%, var(--gold) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brown-900);
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 4px 8px -2px rgba(156, 122, 53, 0.3);
+}
+.visit-line .icon svg { width: 18px; height: 18px; }
+.visit-line strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--brown-900);
+  margin-bottom: 2px;
+  font-weight: 600;
+}
+.visit-line p, .visit-line a {
+  font-size: 0.95rem;
+  color: var(--brown-700);
+  line-height: 1.5;
+  display: block;
+}
+.visit-line a:hover { color: var(--gold-deep); }
+
+.visit-map-wrap {
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(200, 164, 90, 0.4);
+  box-shadow: 0 20px 50px -20px rgba(74, 44, 26, 0.3);
+  min-height: 360px;
+}
+.visit-map-wrap iframe {
+  width: 100%; height: 100%;
+  border: 0;
+  display: block;
+  filter: saturate(0.85) contrast(0.95);
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+footer {
+  background: linear-gradient(180deg, var(--brown-900) 0%, #1A0E08 100%);
+  color: var(--cream);
+  padding: 64px 24px 28px;
+  position: relative;
+  overflow: hidden;
+}
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 200px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+footer::after {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(200, 164, 90, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+.foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 48px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(229, 200, 135, 0.15);
+  position: relative;
+  z-index: 1;
+}
+.foot-brand {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+.foot-brand em { color: var(--gold-soft); font-style: italic; }
+.foot-tag {
+  font-size: 0.9rem;
+  color: rgba(250, 244, 232, 0.7);
+  font-style: italic;
+  font-family: var(--serif);
+  max-width: 280px;
+}
+.foot-col h4 {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+  margin-bottom: 16px;
+  font-family: var(--sans);
+}
+.foot-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.foot-col li, .foot-col a {
+  font-size: 0.92rem;
+  color: rgba(250, 244, 232, 0.78);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: color 200ms ease;
+}
+.foot-col a:hover { color: var(--gold-soft); }
+.foot-col svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+.foot-bot {
+  max-width: 1100px;
+  margin: 24px auto 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: rgba(250, 244, 232, 0.55);
+  position: relative;
+  z-index: 1;
+}
+.foot-bot .heart { color: var(--gold); }
+
+/* =========================================================
+   REVEAL ON SCROLL
+   ========================================================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 800ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.btn-whatsapp:focus-visible, .tab:focus-visible {
+  outline-offset: 4px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 1024px) {
+  .menu-grid { grid-template-columns: repeat(3, 1fr); }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 820px) {
+  .nav-links, .nav-cta-wrap { display: none; }
+  .hamburger { display: inline-flex; }
+  .nav { padding: 8px 8px 8px 18px; }
+  .about-grid { grid-template-columns: 1fr; gap: 40px; }
+  .about-img-wrap { aspect-ratio: 4/3; max-width: 480px; margin: 0 auto; }
+  .visit-grid { grid-template-columns: 1fr; }
+  .foot-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+  section { padding: 80px 22px; }
+  .section-head { margin-bottom: 48px; }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  .nav-wrap { top: 12px; width: calc(100% - 24px); }
+  .nav { padding: 6px 6px 6px 16px; }
+  .nav-brand { font-size: 1.15rem; }
+  .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .gallery-grid { grid-template-columns: 1fr; gap: 16px; }
+  section { padding: 64px 18px; }
+  .section-head { margin-bottom: 40px; }
+  .btn-whatsapp { padding: 14px 26px; font-size: 0.92rem; }
+  .hero-meta { gap: 14px; }
+  .about-accent { bottom: -14px; right: -14px; padding: 14px 18px; }
+  .about-accent strong { font-size: 1.4rem; }
+  .tabs-wrap { overflow-x: auto; justify-content: flex-start; padding-bottom: 8px; }
+  .tabs { flex-shrink: 0; }
+  .foot-grid { grid-template-columns: 1fr; gap: 28px; }
+  .foot-bot { justify-content: center; text-align: center; }
+  .visit-info { padding: 28px 22px; }
+  .hero-eyebrow { font-size: 0.7rem; letter-spacing: 0.28em; }
+  .menu-card-body { padding: 14px 16px 18px; }
+  .menu-card-name { font-size: 1.1rem; }
+  .menu-card-price { font-size: 1.2rem; }
+}
+
+@media (max-width: 380px) {
+  .hero-title { font-size: 2.7rem; }
+  .menu-grid { grid-template-columns: 1fr; }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .hero-bg { transform: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================
+     NAV
+     ============================================ -->
+<div class="nav-wrap">
+  <nav class="nav glass-nav" aria-label="Primary">
+    <a href="#top" class="nav-brand">
+      <span class="dot"></span>
+      Anand <em style="font-style: italic; color: var(--gold-deep);">Bakery</em>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#visit">Visit</a></li>
+    </ul>
+    <div class="nav-cta-wrap" style="display: flex; align-items: center; gap: 8px;">
+      <a class="nav-cta" href="https://wa.me/919876543210?text=Hi%2C%20I%27d%20like%20to%20place%20an%20order." target="_blank" rel="noopener">
+        Order
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span>
+      </button>
+    </div>
+  </nav>
+</div>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#about">About</a>
+  <a href="#menu">Menu</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#visit">Visit</a>
+  <a class="btn-whatsapp mobile-cta is-pulse" href="https://wa.me/919876543210?text=Hi%2C%20I%27d%20like%20to%20place%20an%20order." target="_blank" rel="noopener">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.5-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 4.9L2 22l5.2-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.2.8.8-3.1-.2-.3c-.9-1.4-1.3-2.9-1.3-4.4 0-4.5 3.7-8.2 8.2-8.2s8.2 3.7 8.2 8.2-3.7 8.4-8.2 8.4z"/></svg>
+    Order on WhatsApp
+  </a>
+</div>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<section class="hero" id="top">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-content">
+    <span class="hero-eyebrow">Park Street · Kolkata</span>
+    <div class="hero-divider"></div>
+    <h1 class="hero-title">Anand <em>Bakery</em></h1>
+    <p class="hero-tagline">Fresh from the oven since 1987 — a neighbourhood ritual, baked by hand, three generations deep.</p>
+    <a class="btn-whatsapp is-pulse" href="https://wa.me/919876543210?text=Hi%2C%20I%27d%20like%20to%20place%20an%20order." target="_blank" rel="noopener" aria-label="Order now on WhatsApp">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.5-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 4.9L2 22l5.2-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.2.8.8-3.1-.2-.3c-.9-1.4-1.3-2.9-1.3-4.4 0-4.5 3.7-8.2 8.2-8.2s8.2 3.7 8.2 8.2-3.7 8.4-8.2 8.4z"/></svg>
+      Order Now
+    </a>
+    <div class="hero-meta">
+      <span>Park Street</span>
+      <span>Open 8 AM – 9 PM</span>
+      <span>Three Generations</span>
+    </div>
+  </div>
+  <a href="#about" class="scroll-cue" aria-label="Scroll to about section">
+    Scroll
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+  </a>
+</section>
+
+<!-- ============================================
+     ABOUT
+     ============================================ -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap reveal">
+        <img src="https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=1200&q=80" alt="Warm interior of Anand Bakery on Park Street, Kolkata, with golden lighting" loading="lazy" />
+        <div class="about-accent liquid-glass">
+          <strong>1987</strong>
+          <span>Established</span>
+        </div>
+      </div>
+      <div class="about-text">
+        <div class="section-eyebrow reveal">Our Story</div>
+        <h2 class="reveal">Three generations, <em>one</em> obsession with the perfect bake.</h2>
+        <p class="reveal">Anand Bakery began in 1987 as a small counter on Park Street, where Late Shri Ramesh Chandra began his mornings at four, shaping dough by hand. Today, his son and grandson carry forward the same recipes — the same butter, the same slow ferment, the same patience — quietly, one tray at a time.</p>
+        <p class="reveal">We don't chase trends. We chase the smell of warm bread, the crackle of a fresh croissant, and the smile of a regular who's been ordering the same vanilla pastry for thirty-five years. That's the whole bakery.</p>
+        <div class="about-stats">
+          <div class="stat liquid-glass reveal">
+            <strong>1987</strong>
+            <span>Established</span>
+          </div>
+          <div class="stat liquid-glass reveal">
+            <strong>3</strong>
+            <span>Generations</span>
+          </div>
+          <div class="stat liquid-glass reveal">
+            <strong>1</strong>
+            <span>Time-Tested Recipe</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     MENU
+     ============================================ -->
+<section class="menu" id="menu">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-eyebrow reveal">From the Counter</div>
+      <h2 class="section-title reveal">Our <em>Menu</em></h2>
+      <p class="section-sub reveal">A small, deliberate selection — every item baked fresh, every single morning. Prices are per piece unless noted.</p>
+    </div>
+
+    <div class="tabs-wrap reveal">
+      <div class="tabs liquid-glass" id="tabs">
+        <button class="tab is-active" data-filter="all">All</button>
+        <button class="tab" data-filter="cakes">Cakes</button>
+        <button class="tab" data-filter="pastries">Pastries</button>
+        <button class="tab" data-filter="breads">Breads</button>
+        <button class="tab" data-filter="cookies">Cookies</button>
+        <span class="tab-indicator" id="tabIndicator"></span>
+      </div>
+    </div>
+
+    <div class="menu-grid" id="menuGrid">
+
+      <article class="menu-card glass-card reveal" data-cat="cakes">
+        <div class="menu-card-img">
+          <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80" alt="Chocolate truffle cake on a stand" loading="lazy" />
+          <span class="menu-card-tag">Cakes</span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Chocolate Truffle</h3>
+          <p class="menu-card-desc">Dense Belgian chocolate layered with whipped ganache.</p>
+          <div class="menu-card-foot">
+            <span class="menu-card-weight">500 g</span>
+            <span class="menu-card-price">₹650</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card glass-card reveal" data-cat="cakes">
+        <div class="menu-card-img">
+          <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80" alt="Vanilla butterscotch cake with caramel drizzle" loading="lazy" />
+          <span class="menu-card-tag">Cakes</span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Vanilla Butterscotch</h3>
+          <p class="menu-card-desc">Madagascar vanilla sponge, butterscotch praline crunch.</p>
+          <div class="menu-card-foot">
+            <span class="menu-card-weight">500 g</span>
+            <span class="menu-card-price">₹550</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card glass-card reveal" data-cat="pastries">
+        <div class="menu-card-img">
+          <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=600&q=80" alt="Creamy vanilla pastry dusted with icing sugar" loading="lazy" />
+          <span class="menu-card-tag">Pastries</span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Creamy Vanilla</h3>
+          <p class="menu-card-desc">Flaky puff pastry, vanilla cream, a snow of icing sugar.</p>
+          <div class="menu-card-foot">
+            <span class="menu-card-weight">per piece</span>
+            <span class="menu-card-price">₹90</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card glass-card reveal" data-cat="pastries">
+        <div class="menu-card-img">
+          <img src="https://images.unsplash.com/photo-1612203985729-70726954388c?auto=format&fit=crop&w=600&q=80" alt="Belgian chocolate éclair with dark glaze" loading="lazy" />
+          <span class="menu-card-tag">Pastries</span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Belgian Chocolate Éclair</h3>
+          <p class="menu-card-desc">Choux pastry filled with pastry cream, dipped in dark chocolate.</p>
+          <div class="menu-card-foot">
+            <span class="menu-card-weight">per piece</span>
+            <span class="menu-card-price">₹120</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card glass-card reveal" data-cat="breads">
+        <div class="menu-card-img">
+          <img src="https://images.unsplash.com/photo-1568471173242-461f0a730452?auto=format&fit=crop&w=600&q=80" alt="Freshly baked pav buns in a basket" loading="lazy" />
+          <span class="menu-card-tag">Breads</span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Freshly Baked Pav</h3>
+          <p class="menu-card-desc">Soft, pillowy dinner rolls — the perfect partner to bhaji.</p>
+          <div class="menu-card-foot">
+            <span class="menu-card-weight">pack of 6</span>
+            <span class="menu-card-price">₹60</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card glass-card reveal" data-cat="breads">
+        <div class="menu-card-img">
+          <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80" alt="Whole wheat brown loaf bread" loading="lazy" />
+          <span class="menu-card-tag">Breads</span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Whole Wheat Brown Loaf</h3>
+          <p class="menu-card-desc">Stone-ground atta, slow fermented for a deep, nutty crumb.</p>
+          <div class="menu-card-foot">
+            <span class="menu-card-weight">400 g</span>
+            <span class="menu-card-price">₹80</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card glass-card reveal" data-cat="cookies">
+        <div class="menu-card-img">
+          <img src="https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=600&q=80" alt="Cashew crunch cookies on a plate" loading="lazy" />
+          <span class="menu-card-tag">Cookies</span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Cashew Crunch Cookies</h3>
+          <p class="menu-card-desc">Brown butter, toasted cashew, a hint of sea salt.</p>
+          <div class="menu-card-foot">
+            <span class="menu-card-weight">250 g</span>
+            <span class="menu-card-price">₹220</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="menu-card glass-card reveal" data-cat="cookies">
+        <div class="menu-card-img">
+          <img src="https://images.unsplash.com/photo-1490567674331-72de84996e80?auto=format&fit=crop&w=600&q=80" alt="Butter shortbread cookies in a stack" loading="lazy" />
+          <span class="menu-card-tag">Cookies</span>
+        </div>
+        <div class="menu-card-body">
+          <h3 class="menu-card-name">Butter Shortbread</h3>
+          <p class="menu-card-desc">Melt-in-the-mouth, classic European-style, with cultured butter.</p>
+          <div class="menu-card-foot">
+            <span class="menu-card-weight">200 g</span>
+            <span class="menu-card-price">₹180</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     GALLERY
+     ============================================ -->
+<section class="gallery" id="gallery">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-eyebrow reveal">A Glimpse</div>
+      <h2 class="section-title reveal">From our <em>oven</em></h2>
+      <p class="section-sub reveal">A small visual diary of what comes out of our kitchen, in warm light, on good mornings.</p>
+    </div>
+    <div class="gallery-grid">
+      <figure class="gallery-tile liquid-glass reveal">
+        <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80" alt="Fresh croissants on a wooden board" loading="lazy" />
+        <figcaption class="caption">Morning croissants</figcaption>
+      </figure>
+      <figure class="gallery-tile liquid-glass reveal">
+        <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=800&q=80" alt="Artisan bread loaves in a row" loading="lazy" />
+        <figcaption class="caption">Today's loaves</figcaption>
+      </figure>
+      <figure class="gallery-tile liquid-glass reveal">
+        <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=800&q=80" alt="Slice of layered chocolate cake" loading="lazy" />
+        <figcaption class="caption">Truffle slice</figcaption>
+      </figure>
+      <figure class="gallery-tile liquid-glass reveal">
+        <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=800&q=80" alt="A tray of freshly baked cookies" loading="lazy" />
+        <figcaption class="caption">Cookie tray</figcaption>
+      </figure>
+      <figure class="gallery-tile liquid-glass reveal">
+        <img src="https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80" alt="Display of pastries in a bakery case" loading="lazy" />
+        <figcaption class="caption">The pastry case</figcaption>
+      </figure>
+      <figure class="gallery-tile liquid-glass reveal">
+        <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80" alt="Baker's hands shaping fresh dough" loading="lazy" />
+        <figcaption class="caption">Hands at work</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     VISIT US
+     ============================================ -->
+<section class="visit" id="visit">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-eyebrow reveal">Find Us</div>
+      <h2 class="section-title reveal">Come say <em>hello</em></h2>
+      <p class="section-sub reveal">We're easy to find — right in the heart of Park Street, between the morning coffee crowd and the late-evening walkers.</p>
+    </div>
+    <div class="visit-grid">
+      <div class="visit-info liquid-glass reveal">
+        <h3>Anand <em style="font-style: italic; color: var(--gold-deep);">Bakery</em></h3>
+
+        <div class="visit-line">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <strong>Address</strong>
+            <p>42, Park Street, Near Flury's<br/>Kolkata – 700016</p>
+          </div>
+        </div>
+
+        <div class="visit-line">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <strong>Opening Hours</strong>
+            <p>Open daily · 8:00 AM – 9:00 PM</p>
+          </div>
+        </div>
+
+        <div class="visit-line">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div>
+            <strong>Phone</strong>
+            <a href="tel:+913322295678">+91 33 2229 5678</a>
+          </div>
+        </div>
+
+        <a class="btn-whatsapp" href="https://wa.me/919876543210?text=Hi%2C%20I%27d%20like%20to%20place%20an%20order." target="_blank" rel="noopener" style="align-self: flex-start; margin-top: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.9-.8-1.5-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 4.9L2 22l5.2-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.2.8.8-3.1-.2-.3c-.9-1.4-1.3-2.9-1.3-4.4 0-4.5 3.7-8.2 8.2-8.2s8.2 3.7 8.2 8.2-3.7 8.4-8.2 8.4z"/></svg>
+          Order on WhatsApp
+        </a>
+      </div>
+
+      <div class="visit-map-wrap reveal">
+        <iframe
+          src="https://www.google.com/maps?q=Park+Street,+Kolkata,+India&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+          title="Anand Bakery location on Park Street, Kolkata">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-col">
+      <div class="foot-brand">Anand <em>Bakery</em></div>
+      <p class="foot-tag">A neighbourhood ritual, baked fresh in the heart of Park Street since 1987.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Find Us</h4>
+      <ul>
+        <li>
+          <a href="https://instagram.com/anandbakery" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            @anandbakery
+          </a>
+        </li>
+        <li>
+          <a href="tel:+913322295678">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+            +91 33 2229 5678
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Visit</h4>
+      <ul>
+        <li>42, Park Street</li>
+        <li>Kolkata – 700016</li>
+        <li>Open 8 AM – 9 PM</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bot">
+    <span>© 1987 – 2026 Anand Bakery. All rights reserved.</span>
+    <span>Made with <span class="heart">♥</span> in Kolkata.</span>
+  </div>
+</footer>
+
+<!-- ============================================
+     SCRIPTS
+     ============================================ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================
+     1. SPECULAR HIGHLIGHT — cursor tracking
+     Updates --mx / --my on the target so each
+     glass element's ::before can position its sheen.
+     ============================================ */
+  const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (isFinePointer) {
+    let raf = null;
+    let lastX = 0, lastY = 0;
+    document.addEventListener('mousemove', (e) => {
+      lastX = e.clientX;
+      lastY = e.clientY;
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        document.querySelectorAll('.liquid-glass, .btn-whatsapp').forEach(el => {
+          const r = el.getBoundingClientRect();
+          if (
+            lastX >= r.left - 50 && lastX <= r.right + 50 &&
+            lastY >= r.top - 50 && lastY <= r.bottom + 50
+          ) {
+            const x = ((lastX - r.left) / r.width) * 100;
+            const y = ((lastY - r.top) / r.height) * 100;
+            el.style.setProperty('--mx', x + '%');
+            el.style.setProperty('--my', y + '%');
+            el.classList.add('is-active');
+          } else {
+            el.classList.remove('is-active');
+          }
+        });
+        raf = null;
+      });
+    }, { passive: true });
+  }
+
+  /* ============================================
+     2. SCROLL REVEAL
+     IntersectionObserver — adds .is-visible.
+     Stagger via transition-delay when data-stagger set.
+     ============================================ */
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Apply stagger based on sibling index within same parent
+          const parent = entry.target.parentElement;
+          if (parent) {
+            const idx = Array.from(parent.children).indexOf(entry.target);
+            if (idx >= 0 && idx < 6) {
+              entry.target.style.transitionDelay = (idx * 70) + 'ms';
+            }
+          }
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+  }
+
+  /* ============================================
+     3. HERO PARALLAX
+     Disabled on small viewports to save paint.
+     ============================================ */
+  const heroBg = document.getElementById('heroBg');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.matchMedia('(max-width: 820px)').matches;
+
+  if (heroBg && !reduceMotion && !isMobile) {
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          if (y < window.innerHeight) {
+            heroBg.style.transform = `translateY(${y * 0.4}px)`;
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+
+  /* ============================================
+     4. NAV — scrolled state + mobile menu
+     ============================================ */
+  const nav = document.querySelector('.nav');
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  if (nav) {
+    const onScroll = () => {
+      if (window.scrollY > 24) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  if (hamburger && mobileMenu) {
+    const toggle = (force) => {
+      const isOpen = typeof force === 'boolean' ? force : !mobileMenu.classList.contains('is-open');
+      mobileMenu.classList.toggle('is-open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+      hamburger.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    };
+    hamburger.addEventListener('click', () => toggle());
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggle(false)));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('is-open')) toggle(false);
+    });
+  }
+
+  /* ============================================
+     5. MENU TABS
+     Filter with smooth indicator slide.
+     ============================================ */
+  const tabs = document.getElementById('tabs');
+  const tabIndicator = document.getElementById('tabIndicator');
+  const menuGrid = document.getElementById('menuGrid');
+  if (tabs && tabIndicator && menuGrid) {
+    const tabBtns = tabs.querySelectorAll('.tab');
+
+    const positionIndicator = (btn) => {
+      if (!btn) return;
+      const r = btn.getBoundingClientRect();
+      const pr = tabs.getBoundingClientRect();
+      tabIndicator.style.width = r.width + 'px';
+      tabIndicator.style.transform = `translateX(${r.left - pr.left - 6}px)`;
+    };
+
+    const setActive = (filter) => {
+      tabBtns.forEach(b => b.classList.toggle('is-active', b === filter));
+      positionIndicator(filter);
+      const f = filter.dataset.filter;
+      menuGrid.querySelectorAll('.menu-card').forEach(card => {
+        const cat = card.dataset.cat;
+        const show = (f === 'all' || cat === f);
+        if (show) {
+          card.classList.remove('is-hidden');
+        } else {
+          card.classList.add('is-hidden');
+        }
+      });
+    };
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => setActive(btn));
+    });
+
+    // initial position
+    requestAnimationFrame(() => positionIndicator(tabs.querySelector('.tab.is-active')));
+
+    // reposition on resize
+    window.addEventListener('resize', () => {
+      positionIndicator(tabs.querySelector('.tab.is-active'));
+    });
+  }
+})();
+</script>
+</body>
+</html>
